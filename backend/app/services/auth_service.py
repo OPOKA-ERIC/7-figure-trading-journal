@@ -170,11 +170,15 @@ async def send_verification_email(email: str, name: str, token: str) -> None:
 
     # Production: SendGrid
     try:
+        import ssl
+        import certifi
         import sendgrid
         from sendgrid.helpers.mail import Mail
+        ssl_context = ssl.create_default_context(cafile=certifi.where())
         sg = sendgrid.SendGridAPIClient(api_key=settings.SENDGRID_API_KEY)
+        sg.client.session.verify = certifi.where()
         message = Mail(
-            from_email="noreply@7figurejournal.com",
+            from_email="opokaeric9@gmail.com",
             to_emails=email,
             subject="Verify your 7 Figure Trading Journal account",
             html_content=f"""
@@ -205,11 +209,13 @@ async def send_password_reset_email(email: str, name: str, token: str) -> None:
         return
 
     try:
+        import certifi
         import sendgrid
         from sendgrid.helpers.mail import Mail
         sg = sendgrid.SendGridAPIClient(api_key=settings.SENDGRID_API_KEY)
+        sg.client.session.verify = certifi.where()
         message = Mail(
-            from_email="noreply@7figurejournal.com",
+            from_email="opokaeric9@gmail.com",
             to_emails=email,
             subject="Reset your 7 Figure Trading Journal password",
             html_content=f"""

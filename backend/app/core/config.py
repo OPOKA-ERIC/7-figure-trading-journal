@@ -10,6 +10,9 @@ class Settings(BaseSettings):
     SENDGRID_API_KEY: Optional[str] = None
     FRONTEND_URL: str = "http://localhost:3000"
     ENVIRONMENT: str = "development"
+    STRIPE_SECRET_KEY: Optional[str] = None
+    STRIPE_WEBHOOK_SECRET: Optional[str] = None
+    STRIPE_PRO_PRICE_ID: Optional[str] = None
 
     class Config:
         env_file = ".env"
