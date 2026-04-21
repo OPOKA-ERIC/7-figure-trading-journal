@@ -106,6 +106,25 @@ export const psychologyApi = {
   get: (tradeId: string) => api.get(`/psychology/${tradeId}`),
 };
 
+// ─── BILLING ─────────────────────────────────────────────────────────────────
+export const billingApi = {
+  createCheckout: () => api.post("/billing/create-checkout"),
+  createPortal: () => api.post("/billing/create-portal"),
+};
+
+// ─── RULES ───────────────────────────────────────────────────────────────────
+export const rulesApi = {
+  get: () => api.get("/users/me/rules"),
+  save: (data: {
+    max_daily_trades: number;
+    max_risk_percent: number;
+    trading_session: string;
+    session_start_utc?: string | null;
+    session_end_utc?: string | null;
+    custom_mistakes: string[];
+  }) => api.put("/users/me/rules", data),
+};
+
 // ─── ANALYTICS ────────────────────────────────────────────────────────────────
 export const analyticsApi = {
   overview: (accountId: string) =>

@@ -3,49 +3,40 @@
 import { useState } from "react";
 import Link from "next/link";
 import { authApi } from "@/lib/api";
-import { Eye, EyeOff, TrendingUp, CheckCircle } from "lucide-react";
+import { TrendingUp, Mail } from "lucide-react";
 
-export default function RegisterPage() {
-  const [form, setForm] = useState({ display_name: "", email: "", password: "" });
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+export default function ForgotPasswordPage() {
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
     try {
-      await authApi.register(form);
-      setSuccess(form.email);
+      await authApi.forgotPassword(email);
+      setSubmitted(true);
     } catch (err: any) {
-      setError(err.response?.data?.detail || "Registration failed. Please try again.");
+      setError(err.response?.data?.detail || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   const inputStyle = {
-    width: "100%",
-    padding: "11px 14px",
-    borderRadius: "8px",
-    background: "#0D2137",
-    border: "1px solid #1E3A5F",
-    color: "white",
-    fontSize: "14px",
-    outline: "none",
-    boxSizing: "border-box" as const,
-    transition: "border-color 0.15s",
+    width: "100%", padding: "11px 14px", borderRadius: "8px",
+    background: "#0D2137", border: "1px solid #1E3A5F",
+    color: "white", fontSize: "14px", outline: "none",
+    boxSizing: "border-box" as const, transition: "border-color 0.15s",
   };
 
   return (
     <div style={{
       minHeight: "100vh",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
+      display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center",
       padding: "24px",
       background: "radial-gradient(ellipse at 50% 0%, #1A3A5C 0%, #0D2137 65%)",
     }}>
@@ -70,55 +61,52 @@ export default function RegisterPage() {
 
       {/* Card */}
       <div style={{
-        width: "100%",
-        maxWidth: "400px",
-        background: "#132236",
-        border: "1px solid #1E3A5F",
-        borderRadius: "16px",
-        padding: "32px",
+        width: "100%", maxWidth: "400px",
+        background: "#132236", border: "1px solid #1E3A5F",
+        borderRadius: "16px", padding: "32px",
         boxShadow: "0 24px 64px rgba(0,0,0,0.5)",
       }}>
 
-        {success ? (
-          /* Success state */
+        {submitted ? (
           <div style={{ textAlign: "center" }}>
             <div style={{
               width: "56px", height: "56px", borderRadius: "50%",
-              background: "#0D3320", border: "1px solid #1E6B3A",
+              background: "#0D2A4A", border: "1px solid #1E5A8F",
               display: "flex", alignItems: "center", justifyContent: "center",
               margin: "0 auto 20px",
             }}>
-              <CheckCircle size={28} color="#4ADE80" />
+              <Mail size={26} color="#2E86C1" />
             </div>
             <h2 style={{ color: "white", fontSize: "18px", fontWeight: 700, margin: "0 0 8px" }}>
               Check your email
             </h2>
             <p style={{ color: "#5A7A95", fontSize: "13px", lineHeight: 1.6, margin: "0 0 8px" }}>
-              We sent a verification link to
+              If an account exists for
             </p>
-            <p style={{ color: "#E8F4FD", fontSize: "14px", fontWeight: 600, margin: "0 0 28px" }}>
-              {success}
+            <p style={{ color: "#E8F4FD", fontSize: "14px", fontWeight: 600, margin: "0 0 12px" }}>
+              {email}
+            </p>
+            <p style={{ color: "#5A7A95", fontSize: "13px", lineHeight: 1.6, margin: "0 0 28px" }}>
+              you'll receive a password reset link shortly. The link expires in 1 hour.
             </p>
             <Link href="/login" style={{
-              display: "block", width: "100%", padding: "12px",
-              borderRadius: "8px", background: "#2E86C1", color: "white",
-              fontWeight: 600, fontSize: "14px", textDecoration: "none",
-              textAlign: "center", boxSizing: "border-box",
+              display: "block", padding: "12px", borderRadius: "8px",
+              background: "#2E86C1", color: "white", fontWeight: 600,
+              fontSize: "14px", textDecoration: "none", textAlign: "center",
             }}>
-              Go to Sign In
+              Back to Sign In
             </Link>
-            <p style={{ color: "#5A7A95", fontSize: "12px", marginTop: "16px" }}>
-              Didn&apos;t receive it? Check your spam folder.
+            <p style={{ color: "#5A7A95", fontSize: "12px", marginTop: "14px" }}>
+              Didn't receive it? Check your spam folder.
             </p>
           </div>
         ) : (
-          /* Form state */
           <>
             <h2 style={{ color: "white", fontSize: "18px", fontWeight: 700, margin: "0 0 4px" }}>
-              Create your account
+              Forgot your password?
             </h2>
             <p style={{ color: "#5A7A95", fontSize: "13px", marginTop: 0, marginBottom: "24px" }}>
-              Start your trading improvement journey
+              Enter your email and we'll send you a reset link
             </p>
 
             {error && (
@@ -132,32 +120,14 @@ export default function RegisterPage() {
             )}
 
             <form onSubmit={handleSubmit}>
-              {/* Display Name */}
-              <div style={{ marginBottom: "16px" }}>
+              <div style={{ marginBottom: "20px" }}>
                 <label style={{ display: "block", color: "#7A9BB5", fontSize: "11px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: "7px" }}>
-                  Display Name
-                </label>
-                <input
-                  type="text"
-                  value={form.display_name}
-                  onChange={(e) => setForm({ ...form, display_name: e.target.value })}
-                  required
-                  placeholder="Your trading name"
-                  style={inputStyle}
-                  onFocus={(e) => (e.target.style.borderColor = "#2E86C1")}
-                  onBlur={(e) => (e.target.style.borderColor = "#1E3A5F")}
-                />
-              </div>
-
-              {/* Email */}
-              <div style={{ marginBottom: "16px" }}>
-                <label style={{ display: "block", color: "#7A9BB5", fontSize: "11px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: "7px" }}>
-                  Email
+                  Email Address
                 </label>
                 <input
                   type="email"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                   autoComplete="email"
                   placeholder="you@example.com"
@@ -167,40 +137,6 @@ export default function RegisterPage() {
                 />
               </div>
 
-              {/* Password */}
-              <div style={{ marginBottom: "24px" }}>
-                <label style={{ display: "block", color: "#7A9BB5", fontSize: "11px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: "7px" }}>
-                  Password
-                </label>
-                <div style={{ position: "relative" }}>
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    value={form.password}
-                    onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    required
-                    minLength={8}
-                    autoComplete="new-password"
-                    placeholder="Min 8 characters"
-                    style={{ ...inputStyle, paddingRight: "42px" }}
-                    onFocus={(e) => (e.target.style.borderColor = "#2E86C1")}
-                    onBlur={(e) => (e.target.style.borderColor = "#1E3A5F")}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    style={{
-                      position: "absolute", right: "12px", top: "50%",
-                      transform: "translateY(-50%)", background: "none",
-                      border: "none", color: "#5A7A95", cursor: "pointer",
-                      display: "flex", alignItems: "center", padding: "4px",
-                    }}
-                  >
-                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
-              </div>
-
-              {/* Submit */}
               <button
                 type="submit"
                 disabled={loading}
@@ -219,15 +155,15 @@ export default function RegisterPage() {
                       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.25" />
                       <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
                     </svg>
-                    Creating account...
+                    Sending...
                   </>
-                ) : "Create Account"}
+                ) : "Send Reset Link"}
               </button>
             </form>
 
             <div style={{ borderTop: "1px solid #1E3A5F", marginTop: "24px", paddingTop: "20px", textAlign: "center" }}>
               <p style={{ color: "#5A7A95", fontSize: "13px", margin: 0 }}>
-                Already have an account?{" "}
+                Remember your password?{" "}
                 <Link href="/login" style={{ color: "#2E86C1", fontWeight: 600, textDecoration: "none" }}>
                   Sign in
                 </Link>
@@ -237,9 +173,7 @@ export default function RegisterPage() {
         )}
       </div>
 
-      <style>{`
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-      `}</style>
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
 
       <p style={{ color: "#2A4A6B", fontSize: "12px", marginTop: "32px" }}>
         © 2026 7 Figure Trading Journal
