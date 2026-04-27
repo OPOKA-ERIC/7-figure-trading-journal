@@ -14,6 +14,7 @@ click==8.3.2
 colorama==0.4.6
 cryptography==46.0.6
 ecdsa==0.19.2
+email-validator==2.2.0
 fastapi==0.135.3
 greenlet==3.3.2
 h11==0.16.0
