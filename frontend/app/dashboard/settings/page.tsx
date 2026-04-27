@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth-context";
 import { userApi, accountApi, rulesApi } from "@/lib/api";
 import { User, Database, Shield, Sliders, Plus, Trash2, Check } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 const card = { background: "#132236", border: "1px solid #1E3A5F", borderRadius: "14px", padding: "24px" };
 
@@ -59,6 +60,14 @@ function SaveButton({ onClick, loading, saved }: { onClick: () => void; loading:
 }
 
 export default function SettingsPage() {
+  return (
+    <Suspense fallback={null}>
+      <SettingsContent />
+    </Suspense>
+  );
+}
+
+function SettingsContent() {
   const { user, refresh } = useAuth();
   const searchParams = useSearchParams();
   const [upgradeSuccess, setUpgradeSuccess] = useState(false);
