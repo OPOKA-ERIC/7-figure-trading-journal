@@ -116,7 +116,18 @@ async def reset_password(db: AsyncSession, token: str, new_password: str) -> Non
             detail="Invalid or expired reset link",
         )
 
-    if user.reset_token_expires < datetime.now(timezone.utc):
+    if user.reset_token_expires is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired reset link",
+        )
+
+    # Handle both timezone-aware and timezone-naive datetimes from DB
+    expires = user.reset_token_expires
+    if expires.tzinfo is None:
+        expires = expires.replace(tzinfo=timezone.utc)
+    
+    if expires < datetime.now(timezone.utc):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Reset link has expired. Please request a new one.",
