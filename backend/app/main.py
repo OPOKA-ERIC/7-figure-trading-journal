@@ -41,9 +41,19 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Build allowed origins list — always include the configured frontend URL
+# plus common Vercel preview URL patterns
+_allowed_origins = [
+    settings.FRONTEND_URL,
+    "http://localhost:3000",
+]
+# Also allow all vercel.app subdomains for preview deployments
+_allow_origin_regex = r"https://.*\.vercel\.app"
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.FRONTEND_URL],
+    allow_origins=_allowed_origins,
+    allow_origin_regex=_allow_origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
